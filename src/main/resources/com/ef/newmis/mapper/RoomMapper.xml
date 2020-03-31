@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ef.newmis.mapper.RoomMapper">
+
+    <!--    查找教师信息-->
+    <select id="showAllRooms" resultType="com.ef.newmis.entity.RoomEntity">
+      SELECT * FROM t_room
+    </select>
+
+
+    <!--    查找教材-->
+    <select id="showAllBooks" resultType="com.ef.newmis.entity.BookEntity">
+      SELECT * FROM t_book
+    </select>
+
+
+</mapper>

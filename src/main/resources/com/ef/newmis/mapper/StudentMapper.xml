@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ef.newmis.mapper.StudentMapper">
+    <!--    查找学生信息-->
+    <select id="searchStudent" resultType="com.ef.newmis.entity.StudentEntity">
+      SELECT * FROM t_student
+      where
+      english_name like   concat('%',#{searchVal},'%')  or
+      chinese_name like   concat('%',#{searchVal},'%')  or
+      phonetic_name like  concat('%',#{searchVal},'%') or
+      tel_no         like concat('%',#{searchVal},'%')
+
+    </select>
+    <!--   删除学生信息-->
+    <delete id="delStudent" parameterType="String">
+        delete from t_student where student_no=#{studentNo}
+    </delete>
+
+
+    <select id="check" resultType="com.ef.newmis.entity.StudentEntity">
+      SELECT * FROM t_student
+      where
+         tel_no=#{telNo} and  phonetic_name = #{phoneticName}
+
+    </select>
+
+
+    <insert id="insertStudent" parameterType="com.ef.newmis.entity.StudentEntity">
+			INSERT INTO t_student
+			(
+			 english_name,
+			 chinese_name,
+			 phonetic_name,
+
+			 tel_no,
+			 sex,
+			 birthday,
+
+			 create_person,
+			 create_date,
+			 student_source,
+			 memo_history
+			)
+			VALUES (
+			#{englishName, jdbcType=VARCHAR},
+			#{chineseName, jdbcType=VARCHAR},
+			#{phoneticName, jdbcType=VARCHAR},
+			#{telNo, jdbcType=VARCHAR},
+			#{sex, jdbcType=VARCHAR},
+			#{birthday, jdbcType=VARCHAR},
+
+			#{createPerson, jdbcType=VARCHAR},
+			#{createDate, jdbcType=VARCHAR},
+			#{studentSource, jdbcType=VARCHAR},
+			concat(SYSDATE(),'\t', #{memo})
+			)
+		</insert>
+    <!--     update-->
+    <update id="updateStudent" parameterType="com.ef.newmis.entity.StudentEntity">
+	 	update t_student
+		set
+			 english_name=  #{englishName, jdbcType=VARCHAR},
+			 chinese_name = 	#{chineseName, jdbcType=VARCHAR},
+			 phonetic_name =#{phoneticName, jdbcType=VARCHAR},
+			 tel_no =#{telNo, jdbcType=VARCHAR},
+			 sex = 	#{sex, jdbcType=VARCHAR},
+			 birthday = #{birthday, jdbcType=VARCHAR},
+			 create_person = #{createPerson, jdbcType=VARCHAR},
+			 create_date =#{createDate, jdbcType=VARCHAR},
+
+			 memo_history =	  concat(SYSDATE(),'\t', #{memo},'\n', #{memoHistory})
+
+		where  t_student.student_no=#{studentNo}
+	</update>
+
+
+    <!--    查找学生信息-->
+    <select id="searchByScheduleId" resultType="com.ef.newmis.entity.StudentEntity" parameterType="java.lang.String">
+	SELECT
+			*
+		FROM
+			t_student
+		WHERE
+			student_no IN (
+				SELECT
+					student_no
+				FROM
+					t_chooseclass
+				WHERE
+					class_code IN (
+						SELECT
+							class_code
+						FROM
+							t_schedule
+						WHERE
+							schedule_id =  #{scheduleId}
+					)
+			)
+
+    </select>
+
+
+    <!--    确定出勤记录-->
+    <select id="checkAbsent" resultType="com.ef.newmis.entity.AbsentEntity" parameterType="java.lang.String">
+	SELECT
+			*
+		FROM
+			t_absent
+		WHERE
+		 	schedule_id =  #{scheduleId}
+
+    </select>
+
+
+    <!--	createAbsentByScheduleId-->
+
+    <!-- 插入班级课程表记录 -->
+    <insert id="createAbsent" parameterType="java.util.List">
+
+
+        insert into t_absent
+        (schedule_id, student_no, absent)
+        values
+        <foreach collection="list" item="absenetList" index="index" separator=",">
+            (
+            #{absenetList.scheduleId},
+            #{absenetList.studentNo},
+            #{absenetList.absent}
+            )
+        </foreach>
+    </insert>
+
+
+    <!--    查询出勤记录-->
+    <select id="searchAbsentByStudentName" resultType="com.ef.newmis.entity.AbsentDetailEntity"
+            parameterType="java.lang.String">
+
+	SELECT
+    	b.class_code,
+    	b.schedule_date,
+    	b.schedule_time,
+    	c.chinese_name,
+    	c.phonetic_name,
+        d.univalence,
+    	case when a.absent= 0 then
+    	'NO'
+    	when 1 then
+    	'YES'
+    	END as absent
+    	FROM
+    	t_schedule b,
+    	t_student c,
+      t_course d,
+      t_class e,
+      t_absent a
+    	WHERE
+    	a.schedule_id = b.schedule_id
+    	AND a.student_no = c.student_no
+      and e.class_code = b.class_code
+      AND d.course_code = e.course_code
+    	and (
+    	    english_name  like  concat('%',#{searchVal},'%')  or
+			chinese_name  like  concat('%',#{searchVal},'%')  or
+			phonetic_name like  concat('%',#{searchVal},'%')  or
+			tel_no        like  concat('%',#{searchVal},'%')
+    	)
+    	order by b.schedule_date
+
+    </select>
+
+
+	<insert id="pay" parameterType="com.ef.newmis.entity.PayEntity">
+			INSERT INTO t_pay
+			(
+			 pay_id,
+			 pay_way,
+			 pay_type,
+			 pay_date,
+			 course_cost,
+			 course_rate,
+			 course_total,
+			 pay_staff,
+			 student_no,
+			 memo
+
+			)
+			VALUES (
+			#{payId, jdbcType=VARCHAR},
+			#{payWay, jdbcType=VARCHAR},
+			#{payType, jdbcType=VARCHAR},
+			NOW(),
+			#{courseCost, jdbcType=VARCHAR},
+			#{courseRate, jdbcType=VARCHAR},
+			#{courseTotal, jdbcType=VARCHAR},
+			#{payStaff, jdbcType=VARCHAR},
+			#{studentNo, jdbcType=VARCHAR},
+			concat(SYSDATE(),'\t', 'First Input',"\t",#{courseTotal})
+
+			)
+
+		</insert>
+
+
+	<!--    查找缴费信息-->
+	<select id="searchPayRecord" resultType="com.ef.newmis.entity.PayEntity" parameterType="java.lang.String">
+
+		SELECT
+			a.*,
+			b.chinese_name,
+			b.phonetic_name
+		FROM
+			t_pay a,
+			t_student b
+		WHERE
+			a.student_no = b.student_no  AND
+			(
+			    DATE_FORMAT(pay_date, '%Y-%m-%d') = DATE_FORMAT(#{searchVal}, '%Y-%m-%d') or
+			    b.chinese_name like   concat('%',#{searchVal},'%')  or
+                b.phonetic_name like  concat('%',#{searchVal},'%')
+            )
+
+
+    </select>
+
+	<!--    查找缴费信息-->
+	<select id="searchPayRecordWithDateRange" resultType="com.ef.newmis.entity.PayEntity" parameterType="java.lang.String">
+
+		SELECT
+			a.*,
+			b.chinese_name,
+			b.phonetic_name
+		FROM
+			t_pay a,
+			t_student b
+		WHERE
+			a.student_no = b.student_no  AND
+			(
+			    DATE_FORMAT(pay_date, '%Y-%m-%d') between  DATE_FORMAT(#{beginDate}, '%Y-%m-%d')
+               and
+			    DATE_FORMAT(#{endDate}, '%Y-%m-%d')
+            )
+
+
+    </select>
+
+
+
+
+
+
+
+<!--	updatePay-->
+
+
+	<update id="updatePay" parameterType="com.ef.newmis.entity.PayEntity">
+	 	update t_pay
+		set
+			 course_total = #{courseTotal},
+
+			 memo =	  concat(SYSDATE(),'\t', #{memo},"\t",#{courseTotal},'\n',memo  )
+
+		where  pay_Id=#{payId}
+	</update>
+
+
+
+
+
+</mapper>

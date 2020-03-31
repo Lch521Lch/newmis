@@ -1,0 +1,27 @@
+Manifest-Version: 1.0
+Class-Path: hibernate-validator-6.0.18.Final.jar snakeyaml-1.25.jar sp
+ ring-beans-5.2.3.RELEASE.jar spring-boot-starter-2.2.4.RELEASE.jar my
+ batis-3.5.2.jar tomcat-embed-websocket-9.0.30.jar jul-to-slf4j-1.7.30
+ .jar java-jwt-3.8.2.jar tomcat-embed-el-9.0.30.jar HikariCP-3.4.2.jar
+  jackson-core-2.10.2.jar spring-web-5.2.3.RELEASE.jar spring-boot-sta
+ rter-logging-2.2.4.RELEASE.jar commons-codec-1.13.jar classmate-1.5.1
+ .jar mybatis-spring-boot-starter-2.1.0.jar bcprov-jdk15on-1.64.jar sp
+ ring-boot-starter-validation-2.2.4.RELEASE.jar jackson-module-paramet
+ er-names-2.10.2.jar mysql-connector-java-5.1.48.jar spring-boot-start
+ er-web-2.2.4.RELEASE.jar logback-core-1.2.3.jar log4j-api-2.12.1.jar 
+ spring-jcl-5.2.3.RELEASE.jar spring-boot-autoconfigure-2.2.4.RELEASE.
+ jar spring-aop-5.2.3.RELEASE.jar spring-boot-starter-tomcat-2.2.4.REL
+ EASE.jar spring-expression-5.2.3.RELEASE.jar logback-classic-1.2.3.ja
+ r mybatis-spring-2.0.2.jar spring-context-5.2.3.RELEASE.jar spring-we
+ bmvc-5.2.3.RELEASE.jar spring-boot-starter-json-2.2.4.RELEASE.jar lom
+ bok-1.18.10.jar jboss-logging-3.4.1.Final.jar jackson-databind-2.10.2
+ .jar log4j-to-slf4j-2.12.1.jar spring-tx-5.2.3.RELEASE.jar jakarta.an
+ notation-api-1.3.5.jar tomcat-embed-core-9.0.30.jar mybatis-spring-bo
+ ot-autoconfigure-2.1.0.jar hutool-all-5.2.1.jar jackson-datatype-jsr3
+ 10-2.10.2.jar slf4j-api-1.7.30.jar spring-boot-starter-jdbc-2.2.4.REL
+ EASE.jar spring-core-5.2.3.RELEASE.jar jackson-annotations-2.10.2.jar
+  jackson-datatype-jdk8-2.10.2.jar spring-jdbc-5.2.3.RELEASE.jar jjwt-
+ 0.9.1.jar spring-boot-2.2.4.RELEASE.jar jakarta.validation-api-2.0.2.
+ jar fastjson-1.2.59.jar
+Main-Class: com.ef.newmis.NewmisApplication
+

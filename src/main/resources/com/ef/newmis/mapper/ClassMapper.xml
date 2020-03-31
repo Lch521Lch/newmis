@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ef.newmis.mapper.ClassMapper">
+
+    <!--    &lt;!&ndash; 查班级信息&ndash;&gt;-->
+    <select id="searchClass" resultType="com.ef.newmis.entity.ClassEntity">
+      SELECT * FROM t_class
+      where course_code like #{courseCode} or
+            room_code   like #{roomCode} or
+             status like  #{status}   or (
+             head_teacher  like  #{headTeacher} or
+            teacher1 like  #{teacher} or
+            teacher2 like  #{teacher}
+             )
+
+     </select>
+
+
+    <!--   删除班级信息-->
+    <delete id="delClass" parameterType="String">
+            delete from t_class where class_code=#{classCode}
+        </delete>
+
+    <!--  核对班级信息-->
+    <select id="checkClass" resultType="com.ef.newmis.entity.ClassEntity" parameterType="String">
+            SELECT * FROM t_class
+            where class_code  = #{classCode}
+        </select>
+
+    <!--新增班级信息-->
+    <insert id="insertClass" parameterType="com.ef.newmis.entity.ClassEntity">
+    			INSERT INTO t_class
+    			(
+    			   class_code,
+    			   course_code,
+    			   room_code ,
+                   teacher1,
+                   week1,
+                   time1,
+                   end_time1,
+                   teacher2,
+                   week2,
+                   time2 ,
+                   end_time2,
+                   head_teacher ,
+                   begin_date ,
+                   begin_week,
+                   min_students ,
+                   max_students,
+                   Class_frequenc,
+                   status
+    			)
+    			VALUES (
+    			    #{classCode, jdbcType=VARCHAR},
+                    #{courseCode, jdbcType=VARCHAR},
+                    #{roomCode, jdbcType=VARCHAR},
+                    #{teacher1, jdbcType=VARCHAR},
+                    #{week1, jdbcType=VARCHAR},
+                    #{time1, jdbcType=VARCHAR},
+                    #{endTime1, jdbcType=VARCHAR},
+                    #{teacher2, jdbcType=VARCHAR},
+                    #{week2, jdbcType=VARCHAR},
+                    #{time2, jdbcType=VARCHAR},
+                    #{endTime2, jdbcType=VARCHAR},
+                    #{headTeacher, jdbcType=VARCHAR},
+                    #{beginDate, jdbcType=VARCHAR},
+                    #{beginWeek, jdbcType=VARCHAR},
+                    #{minStudents, jdbcType=INTEGER},
+                    #{maxStudents, jdbcType=INTEGER},
+                    #{ClassFrequenc,jdbcType=INTEGER},
+                    'active'
+    			)
+    		</insert>
+
+    <!--        &lt;!&ndash;     修改班级信息-->
+    <!--            先把 配置sql 写了，自己感觉业务上不能做班级修改操作-->
+    <!--        &ndash;&gt;-->
+    <!--        <update id="updateClass" parameterType="com.ef.newmis.entity.ClassEntity">-->
+    <!--    	 	update t_class-->
+    <!--    		set-->
+    <!--                course_code =  #{courseCode, jdbcType=VARCHAR},-->
+    <!--                room_code =  #{roomCode, jdbcType=VARCHAR},-->
+    <!--                teacher_1 = #{teacher1, jdbcType=VARCHAR},-->
+    <!--                time_1 = #{time1, jdbcType=VARCHAR},-->
+    <!--                teacher_2 = #{teacher2, jdbcType=VARCHAR},-->
+    <!--                time_2 = #{time2, jdbcType=VARCHAR},-->
+    <!--                head_teacher = #{headTeacher, jdbcType=VARCHAR},-->
+    <!--                begin_date = #{beginDate, jdbcType=VARCHAR},-->
+    <!--                end_date = #{endDate, jdbcType=VARCHAR},-->
+    <!--                min_students = #{minStudents, jdbcType=INT},-->
+    <!--                max_students =  #{maxStudents, jdbcType=INT},-->
+    <!--                status =  #{status, jdbcType=VARCHAR}-->
+    <!--    		where  class_code.id=#{classCode}-->
+    <!--    	</update>-->
+
+    <!--查询班级历史，即选课历史-->
+
+    <select id="searchClassHis" resultType="com.ef.newmis.entity.ClassHisEntity">
+      SELECT * FROM v_student_class_history
+      where class_code like #{classCode} and
+            student_no like  #{studentNo}
+
+     </select>
+
+
+    <!--   删除班级历史信息-->
+    <delete id="delClassHis" parameterType="String">
+            delete from t_chooseclass where student_no=#{studentNo} and class_code =#{classCode}
+    </delete>
+
+    <insert id="insertClassHis" parameterType="com.ef.newmis.entity.ClassHisEntity">
+    			INSERT INTO t_chooseclass
+    			(
+    			   student_no,
+    			   class_code,
+    			   vdate
+
+
+    			)
+    			VALUES (
+    			    #{studentNo, jdbcType=VARCHAR},
+                    #{classCode, jdbcType=VARCHAR},
+                    SYSDATE()
+    			)
+    		</insert>
+    <!--    searchClassByCode-->
+
+    <select id="searchClassByCode" resultType="com.ef.newmis.entity.ClassEntity" parameterType="String">
+            SELECT * FROM t_class
+            where class_code  = #{classCode} limit 1
+        </select>
+
+
+    <!-- 插入班级课程表记录 -->
+    <insert id="createSchedule" parameterType="java.util.List">
+
+
+        insert into t_schedule
+        (schedule_id, room_code, class_code,
+        schedule_teacher,schedule_date,schedule_week,schedule_time,schedule_endtime)
+        values
+        <foreach collection="list" item="scheduleList" index="index" separator=",">
+            (
+            #{scheduleList.scheduleId},
+            #{scheduleList.roomCode},
+            #{scheduleList.classCode},
+            #{scheduleList.scheduleTeacher},
+            #{scheduleList.scheduleDate},
+            #{scheduleList.scheduleWeek},
+            #{scheduleList.scheduleTime},
+            #{scheduleList.scheduleEndtime}
+            )
+        </foreach>
+    </insert>
+
+    <!--    &lt;!&ndash; 查班级信息&ndash;&gt;-->
+    <select id="searchSchedule" resultType="com.ef.newmis.entity.ScheduleEntity">
+      SELECT * FROM t_schedule
+      where class_code like #{classCode}
+      order  by schedule_date
+
+
+     </select>
+
+
+    <!--    &lt;!&ndash; 查班级信息&ndash;&gt;-->
+    <select id="searchSchedulePrint" resultType="com.ef.newmis.entity.ScheduleEntity">
+      SELECT * FROM t_schedule
+      where schedule_teacher like #{scheduleTeacher} and
+            schedule_date like  #{scheduleDate} and
+            room_code like  #{room}
+     </select>
+
+
+    <update id="updateSchedule" parameterType="com.ef.newmis.entity.ScheduleEntity">
+	 	update t_schedule
+		set
+			 room_code=  #{roomCode, jdbcType=VARCHAR},
+			 schedule_teacher = 	#{scheduleTeacher, jdbcType=VARCHAR},
+			 schedule_date =#{scheduleDate, jdbcType=VARCHAR},
+			 schedule_time =#{scheduleTime, jdbcType=VARCHAR},
+			 schedule_week =#{scheduleWeek, jdbcType=INTEGER}
+
+		 where schedule_id like #{scheduleId}
+	</update>
+
+    <select id="checkChooseClass" parameterType="com.ef.newmis.entity.ScheduleEntity" resultType="java.lang.Integer">
+        SELECT
+          count(*)
+        FROM
+         t_chooseclass a,
+         t_class b
+        WHERE
+         b. STATUS = 'active'
+        AND a.class_code = b.class_code
+        AND a.student_no = #{studentNo}
+
+  </select>
+
+    <!--修改班级结课时间，和结课周 -->
+    <update id="updateClassEndDate">
+        	 	update t_class
+        		set
+                    end_date = #{endDate},
+                    end_week = #{endWeek}
+        		where  class_code=#{classCode}
+        	</update>
+
+
+    <!--修改班级状态 -->
+    <update id="updateClassStatus" parameterType="java.lang.String">
+        	 	update t_class
+        		set
+        		   status =  'completed'
+        		where  class_code=#{classCode}
+        	</update>
+
+
+    <!--    getMaxDate-->
+
+
+    <select id="getMaxDate" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT max(schedule_date)
+        FROM t_schedule
+        where  class_code=#{classCode}
+
+    </select>
+
+
+    <select id="autoUpdate" resultType="com.ef.newmis.entity.ClassEntity">
+
+        SELECT * FROM t_class
+        where
+            DATE_FORMAT(end_date, '%Y%m%d') &lt;  SYSDATE()
+            and STATUS = 'active'
+
+    </select>
+
+
+</mapper>

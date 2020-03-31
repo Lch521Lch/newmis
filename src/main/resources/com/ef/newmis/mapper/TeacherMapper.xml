@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ef.newmis.mapper.TeacherMapper">
+    <!--    查找教师信息-->
+    <select id="searchTeacher" resultType="com.ef.newmis.entity.TeacherEntity">
+      SELECT * FROM t_teacher
+      where
+            teacher_name like   concat('%',#{teacherName},'%')
+
+
+    </select>
+    <!--   删除教师信息-->
+    <delete id="delTeacher" parameterType="String">
+        delete from t_teacher where teacher_id=#{teacherId}
+    </delete>
+
+
+	<!--   新增教师信息-->
+
+    <insert id="insertTeacher" parameterType="com.ef.newmis.entity.TeacherEntity">
+			INSERT INTO t_teacher
+			(
+			 teacher_id,
+			 teacher_name,
+			 teacher_type,
+			 memo
+			)
+			VALUES (
+			#{teacherId, jdbcType=VARCHAR},
+			#{teacherName, jdbcType=VARCHAR},
+			#{teacherType, jdbcType=VARCHAR},
+			#{memo, jdbcType=VARCHAR}
+			)
+		</insert>
+
+
+</mapper>

@@ -1,0 +1,32 @@
+spring:
+ datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+
+    driver-class-name: com.mysql.jdbc.Driver
+    driverClassName:   com.mysql.jdbc.Driver
+    platform: mysql
+
+    #url: jdbc:mysql://localhost:3306/ef?useSSL=false&serverTimezone=UTC&useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true
+    url: jdbc:mysql://221.180.170.54:3306/ef?useSSL=false&serverTimezone=UTC&useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true
+    username: root
+    password: PaTr@1234
+    initialSize: 5
+    minIdle: 5
+    maxActive: 20
+    maxWait: 60000
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: SELECT1FROMDUAL
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    filters: stat,wall,log4j
+    logSlowSql: true
+
+
+
+mybatis:
+  config-location: classpath:mybatis.xml
+debug: false
+server:
+  port: 8888
